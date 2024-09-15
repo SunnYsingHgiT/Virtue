@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Your Brand</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-toggle="dropdown">
+                        Services
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Service 1</a>
+                        <a class="dropdown-item" href="#">Service 2</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Account/Login">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero-section" style="background-image: url('~/images/hero.jpeg'); height: 500px; background-size: cover; background-position: center;">
+    <div class="container text-center text-white d-flex align-items-center justify-content-center" style="height: 100%;">
+        <div>
+            <h1>Welcome to Our Platform</h1>
+            <p>Providing top-notch services for all your needs.</p>
+            <a href="#" class="btn btn-primary btn-lg">Get Started</a>
+        </div>
+    </div>
+</header>
+
+<!-- Global Search Bar -->
+<section class="search-section py-5 bg-light">
+    <div class="container text-center">
+        <form class="form-inline justify-content-center" method="GET" action="/Search">
+            <input type="text" class="form-control mr-2" placeholder="Search for services, products, or help..." name="query">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
+</section>
+
+<!-- Feature Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <i class="fas fa-shield-alt fa-3x mb-3"></i>
+                <h3>Security</h3>
+                <p>Protect your data with industry-leading security measures.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h3>User Management</h3>
+                <p>Easy-to-use tools to manage your users and teams.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-cogs fa-3x mb-3"></i>
+                <h3>Customizable</h3>
+                <p>Adapt our platform to suit your specific needs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">What Our Clients Say</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <blockquote>
+                    <p>"Great service! It helped our business grow tremendously!"</p>
+                    <footer>- John Doe, CEO</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote>
+                    <p>"Amazing platform! Highly recommend it."</p>
+                    <footer>- Jane Smith, Manager</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote>
+                    <p>"Excellent support and easy-to-use interface."</p>
+                    <footer>- Mark Brown, Developer</footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Signup -->
+<section class="newsletter-section py-4 bg-dark text-white text-center">
+    <div class="container">
+        <h4>Sign Up for Our Newsletter</h4>
+        <form class="form-inline justify-content-center">
+            <input type="email" class="form-control mr-2" placeholder="Enter your email">
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>About Us</h5>
+                <p>We offer top-notch services to ensure you meet your business needs.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">Home</a></li>
+                    <li><a href="#" class="text-white">Services</a></li>
+                    <li><a href="#" class="text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Follow Us</h5>
+                <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
