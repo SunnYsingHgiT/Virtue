@@ -1,0 +1,6 @@
+@Virtue.ProductService_HostAddress = http://localhost:5062
+
+GET {{Virtue.ProductService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
