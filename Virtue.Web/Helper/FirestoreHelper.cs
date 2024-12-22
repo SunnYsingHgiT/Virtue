@@ -19,16 +19,23 @@ namespace Virtue.Web.Helper
           ""universe_domain"": ""googleapis.com""
         }";
 
-        static string filepath = "";
-        public static FirestoreDb? database { get; private set; }
-        public static void SetEnvironmentVariable()
+        private static string filepath = "";
+
+        public static FirestoreDb? Database { get; private set; }
+
+        public static void InitializeFirestore()
         {
-            filepath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Path.GetRandomFileName())) + ".json";
-            File.WriteAllText(filepath, fireconfig);
-            File.SetAttributes(filepath, FileAttributes.Hidden);
+            filepath = Path.Combine(Path.GetTempPath(), "firebase_credentials.json");
+            if (!File.Exists(filepath))
+            {
+                File.WriteAllText(filepath, fireconfig);
+                File.SetAttributes(filepath, FileAttributes.Hidden);
+            }
+
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filepath);
-            database = FirestoreDb.Create("virtue-e759c");
-            File.Delete(filepath);
+            Database = FirestoreDb.Create("virtue-e759c");
         }
+
+        public static string GetCredentialFilePath() => filepath;
     }
 }

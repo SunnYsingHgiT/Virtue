@@ -1,33 +1,27 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Options;
-using Google.Apis.Auth;
-using Virtue.Web.Models;
-using Virtue.Web.Services;
 using Virtue.Web.Helper;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Register Firebase settings and FirebaseAuthService
-FirestoreHelper.SetEnvironmentVariable();
+// Register session middleware.
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
-//var firebaseSettings = builder.Configuration.GetSection("FirebaseSettings").Get<FirebaseSettings>();
-//builder.Services.AddSingleton(new FirebaseAuthService(firebaseSettings));
-
+// Initialize Firestore
+FirestoreHelper.InitializeFirestore();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Auth/Error"); // Updated to point to AuthController
+    app.UseExceptionHandler("/Home/Error"); // Update to a valid controller/action
     app.UseHsts();
 }
 
@@ -36,9 +30,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthorization();
 
-// Configure the authentication and authorization middleware
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Login}/{id?}");
