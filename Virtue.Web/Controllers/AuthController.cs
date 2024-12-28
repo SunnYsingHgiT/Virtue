@@ -51,7 +51,7 @@ namespace Virtue.Web.Controllers
 
                 HttpContext.Session.SetString("FirebaseUserId", userRecord.Uid);  
 
-                return RedirectToAction("Dashboard", "Home"); 
+                return RedirectToAction("Home", "index"); 
             }
             catch (Exception ex)
             {
