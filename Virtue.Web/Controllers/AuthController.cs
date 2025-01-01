@@ -1,14 +1,19 @@
-﻿using FirebaseAdmin;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
+using Virtue.Web.Models;
+using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Mvc;
 using Virtue.Web.Helper;
-using Virtue.Web.Models;
+using Virtue.UserService.Models;
 
 namespace Virtue.Web.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly HttpClient _userServiceClient;
+
         static AuthController()
         {
             if (FirebaseApp.DefaultInstance == null)
@@ -19,6 +24,11 @@ namespace Virtue.Web.Controllers
                     ProjectId = "virtue-e759c"
                 });
             }
+        }
+
+        public AuthController(IHttpClientFactory clientFactory)
+        {
+            _userServiceClient = clientFactory.CreateClient("UserService");
         }
 
         [HttpGet]
@@ -32,31 +42,42 @@ namespace Virtue.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);  
+                return View(model);
             }
 
             try
             {
-                // Your login logic using model.Email and model.Password
-                var email = model.Email;
-                var password = model.Password;
-
-                var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
+                // Verify email exists in Firebase
+                var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(model.Email);
 
                 if (userRecord == null)
                 {
                     ModelState.AddModelError(string.Empty, "User not found.");
-                    return View(model);  
+                    return View(model);
                 }
 
-                HttpContext.Session.SetString("FirebaseUserId", userRecord.Uid);  
+                // Retrieve user details from Virtue.UserService
+                var response = await _userServiceClient.GetAsync($"users/{model.Email}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError(string.Empty, "User not found in database.");
+                    return View(model);
+                }
 
-                return RedirectToAction("Home", "index"); 
+                var user = await response.Content.ReadFromJsonAsync<User>();
+                if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                    return View(model);
+                }
+
+                HttpContext.Session.SetString("UserId", user.Id.ToString());
+                return RedirectToAction("Dashboard", "Home");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, "Login failed: " + ex.Message);
-                return View(model);  
+                return View(model);
             }
         }
 
@@ -69,55 +90,74 @@ namespace Virtue.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
 
             try
             {
-                // Check if the email is already in use
-                var existingUser = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(model.Email);
-                if (existingUser != null)
+                //Check if the email is already registered in Firebase
+                try
                 {
-                    ModelState.AddModelError(string.Empty, "Email is already registered.");
-                    return View();
+                    var existingUser = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(model.Email);
+                    if (existingUser != null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Email is already registered.");
+                        return View(model);
+                    }
                 }
-            }
-            catch (FirebaseAuthException ex)
-            {
-                // FirebaseAuthException means the email is not registered, which is fine for creating a new user.
-                // Continue with the registration process.
-            }
+                catch (FirebaseAuthException)
+                {
+                    // Email not found in Firebase; continue with registration
+                }
 
-            try
-            {
-                // Create a new user with email and password
+                // Create user in Firebase Authentication
                 var userRecordArgs = new UserRecordArgs
                 {
                     Email = model.Email,
                     Password = model.Password
                 };
 
-                // Call Firebase Admin SDK to create the user
-                var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userRecordArgs);
+                var firebaseUser = await FirebaseAuth.DefaultInstance.CreateUserAsync(userRecordArgs);
+
+                // Create user in SQL Server via Virtue.UserService
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                    PhoneNumber = model.PhoneNumber,
+                    CreatedAt = DateTime.UtcNow,
+                    Gender = model.Gender,
+                    Address = model.Address,
+                    DateOfBirth = model.DateOfBirth
+                };
+
+                var response = await _userServiceClient.PostAsJsonAsync("api/Users", user);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // Rollback Firebase user creation if SQL server fails
+                    //await FirebaseAuth.DefaultInstance.DeleteUserAsync(firebaseUser.Uid);
+                    var error = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error saving user to database: {error}");
+                    return View(model);
+                }
 
                 return RedirectToAction("Login");
             }
             catch (Exception ex)
             {
-                // Catch any errors related to Firebase or registration process
                 ModelState.AddModelError(string.Empty, "Registration failed: " + ex.Message);
-                return View();
+                return View(model);
             }
         }
-
 
         [HttpPost]
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("FirebaseUserId");
+            HttpContext.Session.Remove("UserId");
             return RedirectToAction("Login");
         }
     }
 }
+

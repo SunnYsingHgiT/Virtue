@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Virtue.UserService.Models;
 
 namespace Virtue.Web.Models
 {
-    public class RegisterViewModel
+    public class RegisterViewModel : User
     {
         [Required]
         [EmailAddress]

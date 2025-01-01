@@ -12,6 +12,12 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddHttpClient("UserService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7292/api");
+});
+builder.Services.AddControllers();
+
 
 // Initialize Firestore
 FirestoreHelper.InitializeFirestore();

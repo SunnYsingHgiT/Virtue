@@ -5,33 +5,155 @@
 }
 
 <h2>Register</h2>
-<form method="post" asp-action="Register" asp-controller="Auth">
-    <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" class="form-control" id="email" name="email" asp-for="Email" placeholder="Enter email" required />
-        <span asp-validation-for="Email" class="text-danger"></span>
+
+<form id="registerForm" method="post" asp-action="Register" asp-controller="Auth">
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label for="FirstName">First Name</label>
+                <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="Enter first name" />
+                <span id="errorFirstName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <label for="LastName">Last Name</label>
+                <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Enter last name" />
+                <span id="errorLastName" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <div class="col-6">
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="email" class="form-control" id="Email" name="Email" placeholder="Enter email" />
+                <span id="errorEmail" class="text-danger"></span>
+            </div>
+        </div>
     </div>
+
     <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" id="password" name="password" asp-for="Password" placeholder="Enter password" required />
-        <span asp-validation-for="Password" class="text-danger"></span>
+        <label for="Password">Password</label>
+        <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter password" />
+        <span id="errorPassword" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" asp-for="ConfirmPassword" placeholder="Confirm password" required />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        <label for="ConfirmPassword">Confirm Password</label>
+        <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm password" />
+        <span id="errorConfirmPassword" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Register</button>
+
+    <div class="form-group">
+        <label for="PhoneNumber">Phone Number</label>
+        <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" placeholder="Enter phone number" />
+        <span id="errorPhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Gender">Gender</label>
+        <select class="form-control" id="Gender" name="Gender">
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <span id="errorGender" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="DateOfBirth">Date of Birth</label>
+        <input type="date" class="form-control" id="DateOfBirth" name="DateOfBirth" />
+        <span id="errorDateOfBirth" class="text-danger"></span>
+    </div>
+
+    <h3>Address</h3>
+    <div class="form-group">
+        <label for="Street">Street</label>
+        <input type="text" class="form-control" id="Street" name="Address.Street" placeholder="Enter street" />
+        <span id="errorStreet" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="City">City</label>
+        <input type="text" class="form-control" id="City" name="Address.City" placeholder="Enter city" />
+        <span id="errorCity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="State">State</label>
+        <input type="text" class="form-control" id="State" name="Address.State" placeholder="Enter state" />
+        <span id="errorState" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Country">Country</label>
+        <input type="text" class="form-control" id="Country" name="Address.Country" placeholder="Enter country" />
+        <span id="errorCountry" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="ZipCode">Zip Code</label>
+        <input type="text" class="form-control" id="ZipCode" name="Address.ZipCode" placeholder="Enter zip code" />
+        <span id="errorZipCode" class="text-danger"></span>
+    </div>
+
+    <button type="button" class="btn btn-primary" onclick="validateForm()">Register</button>
 </form>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger mt-3">
-        <ul>
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <li>@error.ErrorMessage</li>
-            }
-        </ul>
-    </div>
-}
+<div>
+    <a href="@Url.Action("Login", "Auth")">Already have an account? Login</a>
+</div>
+
+<script>
+    function validateForm() {
+        let isValid = true;
+
+        const firstName = $('#FirstName').val().trim();
+        const lastName = $('#LastName').val().trim();
+        const email = $('#Email').val().trim();
+        const password = $('#Password').val().trim();
+        const confirmPassword = $('#ConfirmPassword').val().trim();
+
+        if (firstName === '') {
+            $('#errorFirstName').textContent = 'First Name is required.';
+            isValid = false;
+        } else {
+            $('#errorFirstName').textContent = '';
+        }
+
+        if (lastName === '') {
+            $('#errorLastName').textContent = 'Last Name is required.';
+            isValid = false;
+        } else {
+            $('#errorLastName').textContent = '';
+        }
+
+        if (email === '') {
+            $('#errorEmail').textContent = 'Email is required.';
+            isValid = false;
+        } else if (!/^\S+\S+\.\S+$/.test(email)) {
+            $('#errorEmail').textContent = 'Invalid email format.';
+            isValid = false;
+        } else {
+            $('#errorEmail').textContent = '';
+        }
+
+        if (password === '') {
+            $('#errorPassword').textContent = 'Password is required.';
+            isValid = false;
+        } else if (password !== confirmPassword) {
+            $('#errorConfirmPassword').textContent = 'Passwords do not match.';
+            isValid = false;
+        } else {
+            $('#errorPassword').textContent = '';
+            $('#errorConfirmPassword').textContent = '';
+        }
+        
+        if (isValid) {
+            $('#registerForm').submit();
+        }
+    }
+</script>
+
