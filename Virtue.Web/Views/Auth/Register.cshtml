@@ -117,38 +117,38 @@
         const confirmPassword = $('#ConfirmPassword').val().trim();
 
         if (firstName === '') {
-            $('#errorFirstName').textContent = 'First Name is required.';
+            $('#errorFirstName').text('First Name is required.');
             isValid = false;
         } else {
-            $('#errorFirstName').textContent = '';
+            $('#errorFirstName').text('');
         }
 
         if (lastName === '') {
-            $('#errorLastName').textContent = 'Last Name is required.';
+            $('#errorLastName').text('Last Name is required.');
             isValid = false;
         } else {
-            $('#errorLastName').textContent = '';
+            $('#errorLastName').text('');
         }
 
         if (email === '') {
-            $('#errorEmail').textContent = 'Email is required.';
+            $('#errorEmail').text('Email is required.');
             isValid = false;
         } else if (!/^\S+\S+\.\S+$/.test(email)) {
-            $('#errorEmail').textContent = 'Invalid email format.';
+            $('#errorEmail').text('Invalid email format.');
             isValid = false;
         } else {
-            $('#errorEmail').textContent = '';
+            $('#errorEmail').text('');
         }
 
         if (password === '') {
-            $('#errorPassword').textContent = 'Password is required.';
+            $('#errorPassword').text('Password is required.');
             isValid = false;
         } else if (password !== confirmPassword) {
-            $('#errorConfirmPassword').textContent = 'Passwords do not match.';
+            $('#errorConfirmPassword').text('Passwords do not match.');
             isValid = false;
         } else {
-            $('#errorPassword').textContent = '';
-            $('#errorConfirmPassword').textContent = '';
+            $('#errorPassword').text('');
+            $('#errorConfirmPassword').text('');
         }
         
         if (isValid) {
