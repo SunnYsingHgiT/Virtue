@@ -1,3 +1,9 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 html {
   font-size: 14px;
 }
@@ -19,4 +25,40 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.nav-item.sp{
+
+    margin-left:10px;
+}
+
+nav{
+
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+}
+#navList {
+    margin-left: 2rem;
+   
+    cursor: pointer;
+    font-weight: 500;
+    color: #3f3f3f;
+}
+#navList:hover {
+    color: #000000;
+    font-weight:600;
+}
+#inputBar {
+    padding: 0px 30px;
+    border: 0;
+    outline:0;
+    background-color: #dee0e0;
+    border-radius: 5px;
+   
+}
+
+
+.navItem {
+    margin-top: 0.8rem;
 }
