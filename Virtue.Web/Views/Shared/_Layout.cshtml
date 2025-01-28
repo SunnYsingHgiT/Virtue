@@ -12,12 +12,12 @@
     <header>
         <nav>
             <div class="logo">
-                <h2> Virtue</h2>
+                <h2 asp-area="" asp-controller="Home" asp-action="Index"> Virtue</h2>
             </div>
            
             <div class="navItem">
-                <a id="navList"> Home</a>
-                <a id="navList"> About</a>
+                <a id="navList" asp-area="" asp-controller="Home" asp-action="Index"> Home</a>
+                <a id="navList" asp-area="" asp-controller="Home" asp-action="Privacy"> About</a>
                 <a id="navList"> Service</a>
                 <a id="navList"> Product</a>
                 <a id="navList"> Contact Us</a>
